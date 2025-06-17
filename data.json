@@ -1,0 +1,38 @@
+{
+    "projects": [
+        {
+            "title": "Automation to Implement Dynamic Database Macro",
+            "technologies": "VBA Macros, SQL, UiPath RPA, BOX",
+            "description": "Developed a VBA macro and RPA solution to automate large dataset validation for Engineering Change Management, reducing validation time and enhancing dashboard usability for site engineers."
+        },
+        {
+            "title": "RPA Automation End-to-End",
+            "technologies": "UiPath, Oracle Agile PLM, BaaN ERP, VBA, Tableau, SQL",
+            "description": "Implemented end-to-end RPA automation for ECO processes, eliminating 100% manual effort and achieving 80% efficiency gains by integrating multiple tools and platforms."
+        },
+        {
+            "title": "Master Data Quality Check",
+            "technologies": "BaaN ERP, SQL SSMS, MS Access, VBA",
+            "description": "Built an ETL process to extract, transform, and load data from BaaN ERP, validating customer changes against Flex BOM, reducing errors and enhancing system reliability."
+        },
+        {
+            "title": "Web Task Automator",
+            "technologies": "Selenium Web Driver, Chrome",
+            "description": "Automated repetitive web application tasks using Selenium, reducing execution time and minimizing errors, improving overall operational efficiency."
+        }
+    ],
+    "certifications": [
+        {
+            "name": "SQL",
+            "issuer": "HackerRank"
+        },
+        {
+            "name": "ETL in Python & SQL",
+            "issuer": "LinkedIn"
+        },
+        {
+            "name": "Agile PLM Super Engineer",
+            "issuer": "Agile PLM"
+        }
+    ]
+}
