@@ -1,85 +1,323 @@
-// Initialize AOS
-AOS.init({
-    duration: 800,
-    once: true,
-});
-
-// Theme Toggle
-const themeToggle = document.querySelector('.theme-toggle');
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    themeToggle.innerHTML = `<i class="fas fa-${document.body.classList.contains('dark') ? 'sun' : 'moon'}"></i>`;
-});
-
-// Smooth Scroll for Nav Links
-document.querySelectorAll('.nav-links a').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
-        document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
-    });
-});
-
-// Fetch and Render Projects and Certifications
-fetch('data.json')
-    .then(response => {
-        console.log('Fetch response status:', response.status, response.statusText);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch data.json: ${response.status} ${response.statusText}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Fetched data:', data);
-        // Render Projects
-        const projectsGrid = document.getElementById('projects-grid');
-        if (!projectsGrid) {
-            console.error('projects-grid element not found');
-            return;
-        }
-        if (data.projects && Array.isArray(data.projects)) {
-            projectsGrid.innerHTML = ''; // Clear any error message
-            data.projects.forEach(project => {
-                const projectCard = document.createElement('div');
-                projectCard.classList.add('project-card');
-                projectCard.innerHTML = `
-                    <h3>${project.title}</h3>
-                    <p><strong>Technologies:</strong> ${project.technologies}</p>
-                    <p>${project.description}</p>
-                `;
-                projectsGrid.appendChild(projectCard);
-            });
-        } else {
-            console.error('No projects found in data.json or invalid format');
-            projectsGrid.innerHTML = '<p>No projects available.</p>';
-        }
-
-        // Render Certifications
-        const certificationsList = document.getElementById('certifications-list');
-        if (!certificationsList) {
-            console.error('certifications-list element not found');
-            return;
-        }
-        if (data.certifications && Array.isArray(data.certifications)) {
-            certificationsList.innerHTML = ''; // Clear any error message
-            data.certifications.forEach(cert => {
-                const certItem = document.createElement('li');
-                certItem.textContent = `${cert.name} - ${cert.issuer}`;
-                certificationsList.appendChild(certItem);
-            });
-        } else {
-            console.error('No certifications found in data.json or invalid format');
-            certificationsList.innerHTML = '<p>No certifications available.</p>';
-        }
-    })
-    .catch(error => {
-        console.error('Error loading data.json:', error.message, error.stack);
-        const projectsGrid = document.getElementById('projects-grid');
-        const certificationsList = document.getElementById('certifications-list');
-        if (projectsGrid) {
-            projectsGrid.innerHTML = '<p>Error loading projects.</p>';
-        }
-        if (certificationsList) {
-            certificationsList.innerHTML = '<p>Error loading certifications.</p>';
-        }
-    });
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+body {
+    background: #F9FAFB;
+    color: #1F2937;
+    transition: all 0.3s ease;
+}
+body.dark {
+    background: #0F172A;
+    color: #E5E7EB;
+}
+h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 60px;
+    background: rgba(30, 58, 138, 0.85);
+    color: #E5E7EB;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+}
+.logo {
+    font-size: 1.6em;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+.nav-links a {
+    color: #E5E7EB;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.nav-links a:hover {
+    color: #FBBF24;
+}
+.theme-toggle {
+    cursor: pointer;
+    font-size: 1.3em;
+    color: #E5E7EB;
+    transition: color 0.3s;
+}
+.theme-toggle:hover {
+    color: #FBBF24;
+}
+.hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #1E3A8A, #10B981);
+    color: #E5E7EB;
+}
+.hero-content h1 {
+    font-size: 3.5em;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+.hero-content h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+.hero-content p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+    max-width: 600px;
+    line-height: 1.6;
+}
+.btn {
+    padding: 12px 24px;
+    background: #10B981;
+    color: #E5E7EB;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1em;
+    transition: background 0.3s, transform 0.2s;
+}
+.btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+.btn.secondary {
+    background: transparent;
+    border: 2px solid #FBBF24;
+    color: #FBBF24;
+}
+.btn.secondary:hover {
+    background: #FBBF24;
+    color: #1F2937;
+    transform: translateY(-2px);
+}
+.section {
+    padding: 80px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+h2 {
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #1E3A8A;
+}
+body.dark h2 {
+    color: #10B981;
+}
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+}
+.skill-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1em;
+    font-weight: 500;
+}
+body.dark .skill-card {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(229, 231, 235, 0.2);
+}
+.skill-card i {
+    font-size: 1.2em;
+    color: #10B981;
+    transition: color 0.3s;
+}
+body.dark .skill-card i {
+    color: #FBBF24;
+}
+.skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.skill-card:hover i {
+    color: #FBBF24;
+}
+.experience-item {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 25px;
+    transition: transform 0.3s;
+}
+body.dark .experience-item {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(229, 231, 235, 0.2);
+}
+.experience-item:hover {
+    transform: translateY(-5px);
+}
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+}
+.project-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+body.dark .project-card {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(229, 231, 235, 0.2);
+}
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.project-card h3 {
+    color: #1E3A8A;
+    margin-bottom: 10px;
+}
+body.dark .project-card h3 {
+    color: #10B981;
+}
+.project-card p {
+    line-height: 1.6;
+    font-size: 0.95em;
+}
+.certifications-list {
+    list-style: none;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+body.dark .certifications-list {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(229, 231, 235, 0.2);
+}
+.certifications-list li {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.certifications-list li::before {
+    content: '✔';
+    color: #10B981;
+    font-size: 1.2em;
+}
+.contact-container {
+    max-width: 640px;
+    margin: 0 auto 25px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+body.dark .contact-container {
+    background: rgba(31, 41, 55, 0.7);
+    border: 1px solid rgba(229, 231, 235, 0.2);
+}
+.contact-container iframe {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+}
+footer {
+    text-align: center;
+    padding: 25px;
+    background: #1E3A8A;
+    color: #E5E7EB;
+    font-size: 0.9em;
+}
+.social-links a {
+    margin: 0 15px;
+    color: #10B981;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s;
+}
+body.dark .social-links a {
+    color: #FBBF24;
+}
+.social-links a:hover {
+    color: #FBBF24;
+}
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 30px;
+    }
+    .nav-links {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    .hero-content h1 {
+        font-size: 2.5em;
+    }
+    .hero-content h2 {
+        font-size: 1.4em;
+    }
+    .section {
+        padding: 60px 30px;
+    }
+    .contact-container {
+        padding: 15px;
+    }
+    .contact-container iframe {
+        height: 500px;
+    }
+    .skill-card {
+        font-size: 0.9em;
+        gap: 8px;
+    }
+    .skill-card i {
+        font-size: 1.1em;
+    }
+}
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2em;
+    }
+    .hero-content h2 {
+        font-size: 1.2em;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9em;
+    }
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+    .skill-card {
+        font-size: 0.85em;
+    }
+}
